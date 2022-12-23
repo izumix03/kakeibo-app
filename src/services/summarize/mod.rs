@@ -58,3 +58,28 @@ fn print_table(result_table: BTreeMap<NaiveDate, i32>) {
         println!("{}の収支は{}円でした", date, price);
     }
 }
+
+#[cfg(test)]
+mod summarize_test {
+    use crate::models::ExpenseCategory::Other;
+    use super::*;
+
+    fn get_test_data() -> Vec<models::Item> {
+        vec![super::models::Item::new(
+            "旅行".to_string(),
+            models::Category::Expense(Other),
+            10000,
+            NaiveDate::from_ymd_opt(2022,4,15).unwrap()
+
+        )]
+    }
+
+    #[test]
+    fn test_get_target_dates(){
+        let test_data = get_test_data();
+        let mut expected = BTreeSet::new();
+        expected.insert(NaiveDate::from_ymd_opt(2022,4,1).unwrap());
+
+        assert_eq!(get_target_dates(&test_data), expected);
+    }
+}
